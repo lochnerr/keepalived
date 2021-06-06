@@ -1,0 +1,109 @@
+version: '3'
+
+# Automated test compose file for keepalived container.
+
+services:
+  kad12:
+    image: keepalived
+    command: /usr/local/bin/run-sut.sh
+    restart: "no"
+    hostname: kad12.example.com
+    volumes:
+      - kad12:/sut
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_ADMIN
+      - NET_BROADCAST
+      - NET_RAW
+      - CHOWN
+      - DAC_OVERRIDE
+      - SETGID
+      - SETUID
+      - NET_BIND_SERVICE
+    networks:
+      net:
+        ipv4_address: 192.168.1.12
+  kad11:
+    image: keepalived
+    command: /usr/local/bin/run-sut.sh
+    restart: "no"
+    hostname: kad11.example.com
+    volumes:
+      - kad11:/sut
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_ADMIN
+      - NET_BROADCAST
+      - NET_RAW
+      - CHOWN
+      - DAC_OVERRIDE
+      - SETGID
+      - SETUID
+      - NET_BIND_SERVICE
+    networks:
+      net:
+        ipv4_address: 192.168.1.11
+    depends_on:
+      - kad12
+  kad10:
+    image: keepalived
+    command: /usr/local/bin/run-sut.sh
+    restart: "no"
+    hostname: kad10.example.com
+    volumes:
+      - kad10:/sut
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_ADMIN
+      - NET_BROADCAST
+      - NET_RAW
+      - CHOWN
+      - DAC_OVERRIDE
+      - SETGID
+      - SETUID
+      - NET_BIND_SERVICE
+    networks:
+      net:
+        ipv4_address: 192.168.1.10
+    depends_on:
+      - kad11
+  sut:
+    image: keepalived
+    command: /usr/local/bin/run-sut.sh
+    restart: "no"
+    hostname: sut.example.com
+    volumes:
+      - kad12:/kad12
+      - kad11:/kad11
+      - kad10:/kad10
+    cap_drop:
+      - ALL
+    networks:
+      net:
+        ipv4_address: 192.168.1.15
+    depends_on:
+      - kad10
+
+volumes:
+  kad12:
+  kad11:
+  kad10:
+
+networks:
+  net:
+    driver: bridge
+    driver_opts:
+        com.docker.network.bridge.enable_icc: "true"
+        com.docker.network.bridge.enable_ip_masquerade: "true"
+        com.docker.network.bridge.host_binding_ipv4: "192.168.33.112"
+        com.docker.network.bridge.name: "keepalived"
+        com.docker.network.bridge.mtu: "1500"
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.1.0/24
+          gateway: 192.168.1.1
+

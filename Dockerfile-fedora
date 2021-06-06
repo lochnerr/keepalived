@@ -1,0 +1,46 @@
+FROM fedora:34
+
+LABEL MAINTAINER Richard Lochner, Clone Research Corp. <lochner@clone1.com> \
+      org.label-schema.name = "keepalived" \
+      org.label-schema.description = "Keepalive Daemon Container" \
+      org.label-schema.vendor = "Clone Research Corp" \
+      org.label-schema.usage = "https://github.com/lochnerr/keepalived" \
+      org.label-schema.url = "https://keepalived.org/" \
+      org.label-schema.vcs-url = "https://github.com/lochnerr/keepalived.git"
+
+RUN dnf -y upgrade \
+ && dnf -y install --nodocs \
+        keepalived \
+        bind-utils \
+        iproute \
+        procps-ng \
+        wget \
+        hostname \
+        iputils \
+        findutils \
+        traceroute \
+	systemd-container \
+        nginx \
+ && dnf -y clean all
+
+# Use systemd init to bring up services.
+CMD [ "/sbin/init" ]
+
+# Copy the script files and other artifacts.
+COPY bin/. /usr/local/bin/
+
+# Do one-time configuration.
+RUN systemctl enable keepalived \
+ && groupadd -r keepalived_script \
+ && useradd -r -s /sbin/nologin -g keepalived_script -M keepalived_script
+
+# Set systemd stop signal.
+STOPSIGNAL SIGRTMIN+3
+
+# Set the build labels.
+# Do this last to allow build cacheing during development.
+ARG BUILD_DATE
+ARG VCS_REF
+LABEL org.label-schema.build-date = $BUILD_DATE \
+      org.label-schema.vcs-ref = $VCS_REF
+
