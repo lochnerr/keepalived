@@ -4,7 +4,7 @@ version: '3'
 
 services:
   kad12:
-    image: keepalived
+    image: lochnerr/keepalived:latest
     command: /usr/local/bin/run-sut.sh
     restart: "no"
     hostname: kad12.example.com
@@ -25,7 +25,7 @@ services:
       net:
         ipv4_address: 192.168.1.12
   kad11:
-    image: keepalived
+    image: lochnerr/keepalived:latest
     command: /usr/local/bin/run-sut.sh
     restart: "no"
     hostname: kad11.example.com
@@ -48,7 +48,7 @@ services:
     depends_on:
       - kad12
   kad10:
-    image: keepalived
+    image: lochnerr/keepalived:latest
     command: /usr/local/bin/run-sut.sh
     restart: "no"
     hostname: kad10.example.com
@@ -71,7 +71,7 @@ services:
     depends_on:
       - kad11
   sut:
-    image: keepalived
+    image: lochnerr/keepalived:latest
     command: /usr/local/bin/run-sut.sh
     restart: "no"
     hostname: sut.example.com
