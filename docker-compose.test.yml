@@ -95,15 +95,8 @@ volumes:
 networks:
   net:
     driver: bridge
-    driver_opts:
-        com.docker.network.bridge.enable_icc: "true"
-        com.docker.network.bridge.enable_ip_masquerade: "true"
-        com.docker.network.bridge.host_binding_ipv4: "192.168.33.112"
-        com.docker.network.bridge.name: "keepalived"
-        com.docker.network.bridge.mtu: "1500"
     ipam:
       driver: default
       config:
         - subnet: 192.168.1.0/24
-          gateway: 192.168.1.1
 
