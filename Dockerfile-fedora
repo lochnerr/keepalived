@@ -1,4 +1,4 @@
-FROM fedora:34
+FROM fedora:39
 
 LABEL MAINTAINER Richard Lochner, Clone Research Corp. <lochner@clone1.com> \
       org.label-schema.name = "keepalived" \

@@ -149,9 +149,10 @@ run_test() {
   # Determine which host is active.
   active="$(curl -s http://192.168.1.231/id.txt || :)"
   if [ "${active}" = "$2" ]; then
-    echo "Testing ${host}, active host is correct ${active}."
+    echo "Testing ${host}, active host is correct: ${active}."
   else
-    echo "Testing ${host}, active host is incorrect ${active}, expected ${2}."
+    [ -z "$active" ] && active="unknown"
+    echo "Testing ${host}, active host is incorrect: ${active}, expected ${2}."
     rc="1"
   fi
   sleep 3
@@ -175,5 +176,6 @@ echo "shutdown" >/kad10/stop.sig
 # Let the daemon containers finish.
 sleep 10
 
+echo "INFO: Service $NAME exiting with rc = ${rc}."
 exit $rc
 
