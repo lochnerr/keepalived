@@ -3,7 +3,7 @@
 # run-keepalive-tests.sh: Run the keepalive compose file setting up the environment, if necessary.
 
 if [ "$(id -u)" != "0" ]; then
-	echo "Must bee root!"
+	echo "Must be root!"
 	exit 1
 fi
 
