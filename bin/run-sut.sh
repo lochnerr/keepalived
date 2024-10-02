@@ -11,7 +11,7 @@ init_keepalive_daemon() {
 	#!/bin/sh
 	while : ; do
 	   sleep 5s
-	   if [ -e /sut/stop.sig ]; then
+	   if [ -e /unittest/$1/stop.sig ]; then
              echo "Shutdown invoked..."
 	     if [ -e /var/run/keepalived.pid ]; then
 	       echo "Killing daemon."
@@ -28,8 +28,8 @@ init_keepalive_daemon() {
   chmod +x /usr/local/bin/wait_for_shutdown.sh
   
   # Clear any leftover signal files on the sut volume.
-  rm -f /sut/start.sig
-  rm -f /sut/stop.sig
+  rm -f /unittest/$1/start.sig
+  rm -f /unittest/$1/stop.sig
   echo "Command signals cleared."
   
   echo "Starting the wait_for_shutdown.sh script in the background."
@@ -115,7 +115,7 @@ init_keepalive_daemon() {
   # Check for request
   while : ; do
     sleep 5s
-    if [ -e /sut/start.sig ]; then
+    if [ -e /unittest/$1/start.sig ]; then
       echo "Startup invoked..."
       detail="--log-detail "
       detail=""
@@ -129,7 +129,7 @@ init_keepalive_daemon() {
 NAME="$(hostname -s)"
 if [ "$NAME" != "sut" ]; then
   echo "Daemon container: ${NAME}."
-  init_keepalive_daemon
+  init_keepalive_daemon $NAME
   exit 0
 fi
 
@@ -143,7 +143,8 @@ run_test() {
   host="$1"
   echo "Running test for $host..."
   # Start the keepalive daemon.
-  echo "start" >/$host/start.sig
+  mkdir -p /unittest/$host
+  echo "start" >/unittest/$host/start.sig
   # Wait for it to take control of the address.
   sleep 20
   # Determine which host is active.
@@ -169,12 +170,12 @@ run_test kad10 192.168.1.10
 echo "Terminatind daemon containers."
 
 # Shutdown the daemon containers.
-echo "shutdown" >/kad12/stop.sig
-echo "shutdown" >/kad11/stop.sig
-echo "shutdown" >/kad10/stop.sig
+echo "shutdown" >/unittest/kad12/stop.sig
+echo "shutdown" >/unittest/kad11/stop.sig
+echo "shutdown" >/unittest/kad10/stop.sig
 
 # Let the daemon containers finish.
-sleep 10
+sleep 5
 
 echo "INFO: Service $NAME exiting with rc = ${rc}."
 exit $rc

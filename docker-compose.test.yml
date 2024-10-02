@@ -9,7 +9,7 @@ services:
     restart: "no"
     hostname: kad12.example.com
     volumes:
-      - kad12:/sut
+      unittest:/unittest
     cap_drop:
       - ALL
     cap_add:
@@ -30,7 +30,7 @@ services:
     restart: "no"
     hostname: kad11.example.com
     volumes:
-      - kad11:/sut
+      unittest:/unittest
     cap_drop:
       - ALL
     cap_add:
@@ -53,7 +53,7 @@ services:
     restart: "no"
     hostname: kad10.example.com
     volumes:
-      - kad10:/sut
+      unittest:/unittest
     cap_drop:
       - ALL
     cap_add:
@@ -76,9 +76,7 @@ services:
     restart: "no"
     hostname: sut.example.com
     volumes:
-      - kad12:/kad12
-      - kad11:/kad11
-      - kad10:/kad10
+      unittest:/unittest
     cap_drop:
       - ALL
     networks:
@@ -88,9 +86,7 @@ services:
       - kad10
 
 volumes:
-  kad12:
-  kad11:
-  kad10:
+  unittest:
 
 networks:
   net:
