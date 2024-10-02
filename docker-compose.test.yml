@@ -45,8 +45,6 @@ services:
     networks:
       net:
         ipv4_address: 192.168.1.11
-    depends_on:
-      - kad12
   kad10:
     image: lochnerr/keepalived:latest
     command: /usr/local/bin/run-sut.sh
@@ -68,8 +66,6 @@ services:
     networks:
       net:
         ipv4_address: 192.168.1.10
-    depends_on:
-      - kad11
   sut:
     image: lochnerr/keepalived:latest
     command: /usr/local/bin/run-sut.sh
@@ -82,8 +78,6 @@ services:
     networks:
       net:
         ipv4_address: 192.168.1.15
-    depends_on:
-      - kad10
 
 volumes:
   unittest:
